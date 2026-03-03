@@ -220,6 +220,16 @@ The defender is **stateless** — each round is a fresh conversation. It sees:
 - Make security instructions scenario-aware. Parse `defender_task` and `defender_role` to generate tailored defenses.
 - Stay helpful — a defender that refuses everything fails the normal user test and won't appear on the leaderboard.
 
+### Example submission
+
+See this PR for a complete example of what a Phase 2 submission looks like: [**PR #34: Add reasoning to attacker, two-pass defense to defender**](https://github.com/LambdaLabsML/agentbeats-lambda/pull/34)
+
+It shows:
+- Adding a reasoning step to the attacker (`agents/attacker/agent.py`)
+- Adding a two-pass defense to the defender (`agents/defender/agent.py`)
+- Only files inside `agents/attacker/` and `agents/defender/` are modified — no framework changes needed
+- The commit message uses `[submit]` to trigger the submission workflow
+
 ---
 
 ## Submitting
