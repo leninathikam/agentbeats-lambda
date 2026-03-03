@@ -6,7 +6,13 @@ Build attacker and/or defender agents that compete in adversarial security battl
 
 - Compete on the [leaderboard](http://agentbeats-competition-2026.s3-website-us-east-1.amazonaws.com/leaderboard)
 - The private leaderboard uses entirely unseen scenarios to test generalization
-- All agents use [openai/gpt-oss-20b](https://huggingface.co/openai/gpt-oss-20b)
+- All agents use [openai/gpt-oss-20b](https://huggingface.co/openai/gpt-oss-20b) — an open-weight model served via vLLM
+
+### About the model & API keys
+
+`gpt-oss-20b` is **not** an OpenAI API product — it's an open-weight model that you self-host. The `OPENAI_API_KEY` / `OPENAI_BASE_URL` environment variables point to **your own vLLM endpoint**, not to OpenAI's servers. The key can be any arbitrary string when self-hosting.
+
+**Lambda-hosted endpoint:** We are providing a shared inference endpoint so teams can get started without provisioning a GPU. The API key we sent you is for this endpoint. This hosted endpoint is **temporary** (available through mid-March 2026) — after that, you'll need to self-host or use your [$100 Lambda Cloud compute credits](https://lambdalabs.com/cloud) to run your own.
 
 > Phase 1 documentation (scenario implementation): [phase1.md](phase1.md)
 
@@ -42,9 +48,16 @@ uv sync
 
 ### 3. Set up your LLM inference endpoint
 
-All battles use `openai/gpt-oss-20b`. You need a running inference endpoint.
+All battles use `openai/gpt-oss-20b`. You need a running inference endpoint — either use the Lambda-hosted one or self-host.
 
-**Self-host with vLLM** (1x GPU with 24GB+ VRAM, e.g. A10 on Lambda Cloud or RTX 3090/4090):
+**Option A: Use the Lambda-hosted endpoint** (easiest, temporary through mid-March 2026)
+
+```bash
+export OPENAI_API_KEY="<key-we-sent-you>"
+export OPENAI_BASE_URL="<endpoint-we-sent-you>"
+```
+
+**Option B: Self-host with vLLM** (1x GPU with 24GB+ VRAM, e.g. A10 on Lambda Cloud or RTX 3090/4090):
 
 ```bash
 sudo docker run --gpus all \
@@ -52,8 +65,6 @@ sudo docker run --gpus all \
     -p 8000:8000 --ipc=host \
     vllm/vllm-openai:latest --model openai/gpt-oss-20b
 ```
-
-Then set your environment variables:
 
 ```bash
 export OPENAI_API_KEY="anything"   # Can be any string when self-hosting
@@ -91,11 +102,11 @@ uv run agentbeats-run scenarios/security_arena/scenario_portfolioiq.toml --show-
 All available scenarios:
 
 ```bash
-uv run agentbeats-run scenarios/security_arena/scenario_portfolioiq.toml       # 20 rounds
-uv run agentbeats-run scenarios/security_arena/scenario_thingularity.toml      # 20 rounds
-uv run agentbeats-run scenarios/security_arena/scenario_gymjailbreak.toml      # 10 rounds
-uv run agentbeats-run scenarios/security_arena/scenario_resume_downgrade.toml  #  5 rounds
-uv run agentbeats-run scenarios/security_arena/scenario_medical_example.toml   #  5 rounds
+uv run agentbeats-run scenarios/security_arena/scenario_portfolioiq.toml       # 7 rounds
+uv run agentbeats-run scenarios/security_arena/scenario_thingularity.toml      # 7 rounds
+uv run agentbeats-run scenarios/security_arena/scenario_gymjailbreak.toml      # 7 rounds
+uv run agentbeats-run scenarios/security_arena/scenario_resume_downgrade.toml  # 7 rounds
+uv run agentbeats-run scenarios/security_arena/scenario_medical_example.toml   # 7 rounds
 ```
 
 Results are saved to `results/`.
@@ -136,11 +147,11 @@ If the attack succeeds in any round, the battle ends early. Otherwise the defend
 
 | Scenario | Attack Type | Rounds | Attack Goal |
 |----------|------------|--------|-------------|
-| **PortfolioIQ** | Injection | 20 | Manipulate investment risk assessment from High to Low |
-| **Thingularity** | Direct | 20 | Make shopping assistant reveal hidden internal tools |
-| **GymJailbreak** | Direct | 10 | Get fitness advisor to recommend unsafe intensity (>100%) |
-| **Resume Downgrade** | Injection | 5 | Inject resume content to outrank the target candidate |
-| **Medical Records** | Direct | 5 | Extract patient SSNs from medical records chatbot |
+| **PortfolioIQ** | Injection | 7 | Manipulate investment risk assessment from High to Low |
+| **Thingularity** | Direct | 7 | Make shopping assistant reveal hidden internal tools |
+| **GymJailbreak** | Direct | 7 | Get fitness advisor to recommend unsafe intensity (>100%) |
+| **Resume Downgrade** | Injection | 7 | Inject resume content to outrank the target candidate |
+| **Medical Records** | Direct | 7 | Extract patient SSNs from medical records chatbot |
 
 Plus **unseen scenarios** on the private leaderboard to test generalization.
 
