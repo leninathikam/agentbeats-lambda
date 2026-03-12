@@ -23,6 +23,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Validate competition key
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.COMPETITION_API_KEY }}" ]; then
+            echo "::error::COMPETITION_API_KEY is missing or empty in repository secrets"
+            exit 1
+          fi
+          echo "COMPETITION_API_KEY is configured"
+
       - name: Submit Attacker
         uses: LambdaLabsML/agentbeats-submission-action@main
         with:
@@ -39,6 +48,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Validate competition key
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.COMPETITION_API_KEY }}" ]; then
+            echo "::error::COMPETITION_API_KEY is missing or empty in repository secrets"
+            exit 1
+          fi
+          echo "COMPETITION_API_KEY is configured"
 
       - name: Submit Defender
         uses: LambdaLabsML/agentbeats-submission-action@main
