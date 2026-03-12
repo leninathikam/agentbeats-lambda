@@ -8,7 +8,7 @@ on:
 jobs:
   submit-attacker:
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, '[submit]') || contains(github.event.head_commit.message, '[submit-attacker]')
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[submit]') || contains(github.event.head_commit.message, '[submit-attacker]')
 
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
 
   submit-defender:
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, '[submit]') || contains(github.event.head_commit.message, '[submit-defender]')
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[submit]') || contains(github.event.head_commit.message, '[submit-defender]')
 
     steps:
       - uses: actions/checkout@v4
