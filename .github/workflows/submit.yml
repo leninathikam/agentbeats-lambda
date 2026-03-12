@@ -4,11 +4,21 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      role:
+        description: 'Role to submit'
+        required: true
+        default: 'attacker'
+        type: choice
+        options:
+          - attacker
+          - defender
+          - both
 
 jobs:
   submit-attacker:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[submit]') || contains(github.event.head_commit.message, '[submit-attacker]')
+    if: (github.event_name == 'workflow_dispatch' && (github.event.inputs.role == 'attacker' || github.event.inputs.role == 'both')) || contains(github.event.head_commit.message, '[submit]') || contains(github.event.head_commit.message, '[submit-attacker]')
 
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +35,7 @@ jobs:
 
   submit-defender:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[submit]') || contains(github.event.head_commit.message, '[submit-defender]')
+    if: (github.event_name == 'workflow_dispatch' && (github.event.inputs.role == 'defender' || github.event.inputs.role == 'both')) || contains(github.event.head_commit.message, '[submit]') || contains(github.event.head_commit.message, '[submit-defender]')
 
     steps:
       - uses: actions/checkout@v4
